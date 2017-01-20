@@ -3,7 +3,8 @@ from flask import Flask, render_template, request
 from werkzeug import secure_filename
 from database import connection
 app = Flask(__name__)
-global userpk
+
+import datetime.datetime
 
 app.config['UPLOAD_FOLDER'] = 'uploaded_files'
 @app.route('/')
@@ -48,6 +49,7 @@ def login():
 			print i[1],i[2]
 			if userName==i[1] and userpass==i[2]:
         print "valid user",i[0]
+        userpk=i[0]
         return render_template('uploadfile.html')
 			else:
 				valid=1
@@ -70,8 +72,9 @@ def upload_file1():
         	# c.execute(sqlquery)
         	# rows = c.fetchall()
         	# print rows
+          date=datetime.datetime.now()
         	query="""insert filestore2(f_name,date,p_id) values (%s)"""
-        	c.execute(query,[nameOfFile])
+        	c.execute(query,(nameOfFile,date,userpk)
         	conn.commit()
         	c.close()
         	conn.close()
@@ -85,6 +88,7 @@ def upload_file1():
 def getAllFiles():
     print "inside get_All_Files"
     allFiles = []
+    global userpk
     try:
         c, conn = connection()
         sqlquery = ("select  * from filestore2")
@@ -95,7 +99,7 @@ def getAllFiles():
         
         for name in rows:
           if name[2]==userpk: #  
-           file_name1 = {'name':name[0],'date':date[1]}
+           file_name1 = {'name':name[0],'date':name[2]}
            allFiles.append(file_name1)
         
         print allFiles 
