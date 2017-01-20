@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"
+          rel="stylesheet">
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h3 class="text-muted">All Files Uploaded</h3>
+      </div>
+      <a href="http://52.66.105.229:5000/">Next File Uploading</a>
+      <hr/>
+      <div>
+       <table border = 1>
+
+            <tr>
+               <th>List of All Files </th>
+            </tr>
+           {% for file_name in data %}
+           <tr>
+               <td>{{file_name.name}} </td>
+            </tr>
+            
+          
+           {% endfor %}
+      </table>
+      
+      </div>
+    </div>
+  </body>
+</html>
+
