@@ -3,6 +3,7 @@ from flask import Flask, render_template, request
 from werkzeug import secure_filename
 from database import connection
 app = Flask(__name__)
+global userpk
 
 app.config['UPLOAD_FOLDER'] = 'uploaded_files'
 @app.route('/')
@@ -46,17 +47,15 @@ def login():
 		for i in rows:
 			print i[1],i[2]
 			if userName==i[1] and userpass==i[2]:
-				print "valid user"
-				return render_template('uploadfile.html')
+        print "valid user",i[0]
+        return render_template('uploadfile.html')
 			else:
 				valid=1
 		if valid==1:
 			return "invalid user"
-
 	except Exception as e:
 		print "inside exe getAllFiles"
 		print (str(e))
-	#return render_template('uploadfile.html')
 
 @app.route('/uploader', methods = ['POST'])
 def upload_file1():
@@ -71,7 +70,7 @@ def upload_file1():
         	# c.execute(sqlquery)
         	# rows = c.fetchall()
         	# print rows
-        	query="""insert filestore2(f_name) values (%s)"""
+        	query="""insert filestore2(f_name,date,p_id) values (%s)"""
         	c.execute(query,[nameOfFile])
         	conn.commit()
         	c.close()
@@ -88,16 +87,15 @@ def getAllFiles():
     allFiles = []
     try:
         c, conn = connection()
-        sqlquery = ("select f_name from filestore2")
+        sqlquery = ("select  * from filestore2")
         c.execute(sqlquery)
         rows = c.fetchall()
         
-        res_list = [x[0] for x in rows]
+       # res_list = [x[0] for x in rows]
         
-        for name in res_list:
-         # if data[2]==id: #  
-           file_name1 = {'name':name}
-           #file_name1 = {'date':date} #
+        for name in rows:
+          if name[2]==userpk: #  
+           file_name1 = {'name':name[0],'date':date[1]}
            allFiles.append(file_name1)
         
         print allFiles 
